@@ -1,17 +1,46 @@
-(() => {
-  chrome.storage.sync.get(['idNumber'], function(data) {
-    if (!('idNumber' in data)) {
-      console.log("'idNumber' wasn't found in storage");
+let submit = true;
 
-    } else {
-      const idElement = document.getElementById('p_mis_student');
-      if (idElement == null) {
-        console.log("Can't found element with id 'p_mis_student' in this page");
+(() => {
+  const paramToElementMap = {
+    'userName': 'p_user',
+    'pass': 'p_sisma',
+    'idNumber': 'p_mis_student',
+  };
+
+  chrome.storage.sync.get(Object.keys(paramToElementMap), function(data) {
+    for (const key in paramToElementMap) {
+      if (!(key in data)) {
+        console.log(`${key} wasn't found in storage`);
+        submit = false;
 
       } else {
-        console.log(`Filling ID input box with ${data.idNumber.slice(0, 4)}..`);
-        idElement.value = data.idNumber;
+        const element = document.getElementById(paramToElementMap[key]);
+
+        if (element == null) {
+          submit = false;
+          console.log(
+              `can't found element with id '${paramToElementMap[key]}'`);
+        } else {
+          console.log(`Filling ${paramToElementMap[key]} input`);
+
+          element.value = data[key];
+        }
       }
     }
   });
+})();
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+(async () => {
+  await sleep(250);
+  if (submit) {
+    chrome.storage.sync.get('autoLogin', function(data) {
+      if ('autoLogin' in data && data['autoLogin']) {
+        document.getElementById('login_sso').submit();
+      }
+    })
+  }
 })();

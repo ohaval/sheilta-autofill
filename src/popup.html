@@ -5,9 +5,19 @@
 </head>
 <body>
 <div class="container">
-    <label>Set ID:
+    <label>User Name:
+        <input type="text" id="userName" maxlength="30">
+    </label>
+    <label>Password:
+        <input type="password" id="pass" maxlength="50">
+    </label>
+    <label>ID:
         <input type="tel" id="idNumber" maxlength="9" pattern="[0-9]{9}">
     </label>
+     <label>AutoLogin:
+        <input type="checkbox" id="autoLogin">
+    </label>
+
     <button id="save">Save</button>
     <label id="status"></label>
 </div>
